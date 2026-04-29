@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: couchdb
+  namespace: obsidian
+spec:
+  replicas: 1
+  serviceName: couchdb-service
+  selector:
+    matchLabels:
+      app: couchdb
+  template:
+    metadata:
+      labels:
+        app: couchdb
+    spec:
+      volumes:
+        - name: couchdb-storage
+          persistentVolumeClaim:
+            claimName: obsidian-pvc
+      containers:
+        - name: couchdb
+          image: couchdb:3.3.3
+          ports:
+            - name: couchdb
+              containerPort: 5984
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-creds
+                  key: username
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-creds
+                  key: password
+          volumeMounts:
+            - name: couchdb-storage
+              mountPath: /opt/couchdb/data
