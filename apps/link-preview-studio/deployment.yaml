@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: link-preview-backend
+  namespace: link-preview-studio
+  annotations:
+    keel.sh/policy: force
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/match-tag: "true"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: link-preview-backend
+  template:
+    metadata:
+      labels:
+        app: link-preview-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/lookitval/link-preview-studio-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: SERVER_NAME
+              value: ':80'
+            - name: APP_ENV
+              value: production
+            - name: APP_DEBUG
+              value: 'false'
+            - name: APP_URL
+              value: https://link-preview-studio-api.lookitval.com
+            - name: TRUSTED_PROXIES
+              value: '*'
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: laravel-secrets
+                  key: app_key
