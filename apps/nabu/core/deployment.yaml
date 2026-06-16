@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nabu-core
+  namespace: nabu
+  annotations:
+    keel.sh/policy: force
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/match-tag: "true"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nabu-core
+  template:
+    metadata:
+      labels:
+        app: nabu-core
+    spec:
+      containers:
+        - name: nabu-core
+          image: ghcr.io/lookitval/nabu-core:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

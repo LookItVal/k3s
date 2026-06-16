@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: obsidian-private-pvc
+  namespace: nabu
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: nfs-nabu-obsidian-private-pv
+  storageClassName: ""

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nabu-lens
+  namespace: nabu
+  annotations:
+    keel.sh/policy: force
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/match-tag: "true"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nabu-lens
+  template:
+    metadata:
+      labels:
+        app: nabu-lens
+    spec:
+      containers:
+        - name: nabu-lens
+          image: ghcr.io/lookitval/nabu-lens:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
