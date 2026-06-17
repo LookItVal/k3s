@@ -46,7 +46,7 @@ spec:
                 secretKeyRef:
                   name: postgres-creds
                   key: password
-            - name: REDIS_ADDR
+            - name: REDIS_ADDRESS
               value: "nabu-redis-service.nabu.svc.cluster.local:6379"
             - name: REDIS_PASSWORD
               value: ""
