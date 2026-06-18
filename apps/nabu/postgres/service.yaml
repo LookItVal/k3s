@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: nabu-postgres-service
   namespace: nabu
+  annotations:
+    tailscale.com/expose: "true"
 spec:
   ports:
     - protocol: TCP
