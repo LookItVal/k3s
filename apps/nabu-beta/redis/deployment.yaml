@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nabu-redis
+  namespace: nabu-beta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nabu-redis
+  template:
+    metadata:
+      labels:
+        app: nabu-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.4-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379

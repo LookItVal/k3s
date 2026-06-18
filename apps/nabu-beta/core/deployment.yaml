@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nabu-core
+  namespace: nabu-beta
+  annotations:
+    keel.sh/policy: force
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/match-tag: "true"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nabu-core
+  template:
+    metadata:
+      labels:
+        app: nabu-core
+    spec:
+      containers:
+        - name: nabu-core
+          image: ghcr.io/lookitval/nabu-core:beta
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PG_HOST
+              value: "nabu-postgres-service.nabu-beta.svc.cluster.local"
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_DB
+              value: "nabu_db"
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: username
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: password
+            - name: REDIS_ADDRESS
+              value: "nabu-redis-service.nabu-beta.svc.cluster.local:6379"
+            - name: REDIS_PASSWORD
+              value: ""
+            - name: REDIS_DB
+              value: "0"
