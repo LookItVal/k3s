@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: nabu-core-service
   namespace: nabu-beta
+  annotations:
+    tailscale.com/expose: "true"
+
 spec:
   ports:
     - protocol: TCP
