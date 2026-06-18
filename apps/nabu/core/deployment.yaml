@@ -35,7 +35,7 @@ spec:
             - name: PG_PORT
               value: "5432"
             - name: PG_DB
-              value: "nabu_db"
+              value: "postgres"
             - name: PG_USER
               valueFrom:
                 secretKeyRef:
